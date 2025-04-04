@@ -1,0 +1,8 @@
+.terraform/
+proxmox_vm_template/.terraform.lock.hcl
+proxmox_vm_template/.terraform/
+proxmox_vm_template/variables.tf
+test_ssh
+test_ssh.pub
+vm_cloudinit/.terraform.lock.hcl
+vm_cloudinit/.terraform/
