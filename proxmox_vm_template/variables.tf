@@ -14,26 +14,30 @@ variable "proxmox_node_details" {
     })
 }
 
-variable "cpu_details" {
+variable "new_node_details" {
     type = object({
-      no_of_cores = number
-      sockets = number
-      type = string 
+      proxmox_nodename = string
+      proxmox_id = number 
     })
-    default = {
-        no_of_cores = 1
-        sockets = 1
-        type = "host"
-    }
+}
+
+variable "misc" {
+  type = object({
+    bios = string 
+  })
+  default = {
+    bios = "seabios"
+  }
+}
+
+variable "cpu_core" {
+    type = string
+    default = 2
 }
 
 variable "memory" {
-    type = object({
-      total_mem = number
-    })
-    default = {
-        total_mem = 2048
-    }
+    type = string
+    default = 1024
 }
 
 variable "disk_details" {
@@ -41,14 +45,12 @@ variable "disk_details" {
         interface = string
         datastore_id = string
         size = number
-        iothread = bool
         file_format = string 
     })
     default = {
         interface = "scsi0"
         datastore_id = "local-lvm"
         size = 5
-        iothread = true
         file_format = "raw"
     }
 
@@ -65,7 +67,7 @@ variable "network_details" {
         model = "virtio"
         bridge = "vmbr0"
         gw = "192.168.0.1"
-        ipv4 = "192.168.0.100"
+        ipv4 = "192.168.0.100/24"
     }
 }
 
@@ -81,27 +83,16 @@ variable "user_account_details" {
     }
 }
 
-variable "public_key_path" {
-    type = string
-    default = null
-    description = "Public key to be set on the new vm"
-}
-
-variable new_vm_details{
+variable new_template_details{
     type = object({
-        vm_name = string
-        vm_id = number
-        #  cpu = var.cpu_details
-        #   memory = var.memory
-        #   disk = var.disk_details
-        #   network = var.network_details
-        #   user_acc = var.user_account_details
+        template_name = string
+        template_id = number
         enable_agent = bool
         scsi_hardware = string
     })
     default = {
-        vm_name = "new-vm"
-        vm_id = 5000
+        template_name = "new-vm"
+        template_id = 5000
         enable_agent = true
         scsi_hardware = "virtio-scsi-pci"
     }
@@ -113,7 +104,7 @@ variable "pri_key_path" {
     default = "~/.ssh/id_rsa"
 }
 
-variable "cloud_init" {
+variable "cloud_img" {
   type = object({
     type = string
     datastore_id = string
@@ -122,7 +113,7 @@ variable "cloud_init" {
   default = {
     datastore_id = "local"
     type = "iso"
-    url = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+    url = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
   }
 
 }
